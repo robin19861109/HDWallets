@@ -1,0 +1,10 @@
+cwpro\lcdconf_lin_template.o: ..\STemWin\Config\LCDConf_Lin_Template.c
+cwpro\lcdconf_lin_template.o: ../STemWin/inc/GUI.h
+cwpro\lcdconf_lin_template.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+cwpro\lcdconf_lin_template.o: ../STemWin/inc/GUI_ConfDefaults.h
+cwpro\lcdconf_lin_template.o: ../STemWin/Config/GUIConf.h
+cwpro\lcdconf_lin_template.o: ../STemWin/inc/GUI_Type.h
+cwpro\lcdconf_lin_template.o: ../STemWin/inc/LCD.h
+cwpro\lcdconf_lin_template.o: ../STemWin/inc/Global.h
+cwpro\lcdconf_lin_template.o: ../STemWin/inc/GUI_Version.h
+cwpro\lcdconf_lin_template.o: ../STemWin/inc/GUIDRV_Lin.h

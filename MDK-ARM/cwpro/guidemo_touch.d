@@ -1,0 +1,9 @@
+cwpro\guidemo_touch.o: ..\My\emWin_Demo\GUIDEMO_Touch.c
+cwpro\guidemo_touch.o: ../STemWin/inc/GUI.h
+cwpro\guidemo_touch.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+cwpro\guidemo_touch.o: ../STemWin/inc/GUI_ConfDefaults.h
+cwpro\guidemo_touch.o: ../STemWin/Config/GUIConf.h
+cwpro\guidemo_touch.o: ../STemWin/inc/GUI_Type.h
+cwpro\guidemo_touch.o: ../STemWin/inc/LCD.h
+cwpro\guidemo_touch.o: ../STemWin/inc/Global.h
+cwpro\guidemo_touch.o: ../STemWin/inc/GUI_Version.h

@@ -1,0 +1,10 @@
+cwpro\pngread.o: ..\My\STemWinPNG\pngread.c
+cwpro\pngread.o: ..\My\STemWinPNG\png.h
+cwpro\pngread.o: ..\My\STemWinPNG\zlib.h
+cwpro\pngread.o: ..\My\STemWinPNG\zconf.h
+cwpro\pngread.o: ..\My\STemWinPNG\pngconf.h
+cwpro\pngread.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\setjmp.h
+cwpro\pngread.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+cwpro\pngread.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+cwpro\pngread.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+cwpro\pngread.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h

@@ -1,0 +1,10 @@
+cwpro\alientek.o: ..\emWin_Demo\ALIENTEK.c
+cwpro\alientek.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+cwpro\alientek.o: ../STemWin/inc/GUI.h
+cwpro\alientek.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+cwpro\alientek.o: ../STemWin/inc/GUI_ConfDefaults.h
+cwpro\alientek.o: ../STemWin/Config/GUIConf.h
+cwpro\alientek.o: ../STemWin/inc/GUI_Type.h
+cwpro\alientek.o: ../STemWin/inc/LCD.h
+cwpro\alientek.o: ../STemWin/inc/Global.h
+cwpro\alientek.o: ../STemWin/inc/GUI_Version.h

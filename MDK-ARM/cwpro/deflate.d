@@ -1,0 +1,9 @@
+cwpro\deflate.o: ..\My\STemWinPNG\deflate.c
+cwpro\deflate.o: ..\My\STemWinPNG\deflate.h
+cwpro\deflate.o: ..\My\STemWinPNG\zutil.h
+cwpro\deflate.o: ..\My\STemWinPNG\zlib.h
+cwpro\deflate.o: ..\My\STemWinPNG\zconf.h
+cwpro\deflate.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+cwpro\deflate.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+cwpro\deflate.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+cwpro\deflate.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h

@@ -1,0 +1,9 @@
+cwpro\inftrees.o: ..\My\STemWinPNG\inftrees.c
+cwpro\inftrees.o: ..\My\STemWinPNG\zutil.h
+cwpro\inftrees.o: ..\My\STemWinPNG\zlib.h
+cwpro\inftrees.o: ..\My\STemWinPNG\zconf.h
+cwpro\inftrees.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+cwpro\inftrees.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+cwpro\inftrees.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+cwpro\inftrees.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h
+cwpro\inftrees.o: ..\My\STemWinPNG\inftrees.h

@@ -1,0 +1,16 @@
+cwpro\guidrv_template_1.o: C:\Users\z\Desktop\STemWin\Config\GUIDRV_Template.c
+cwpro\guidrv_template_1.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+cwpro\guidrv_template_1.o: ../STemWin/inc/LCD_Private.h
+cwpro\guidrv_template_1.o: ../My/Inc/LCDConf.h
+cwpro\guidrv_template_1.o: ../STemWin/inc/LCD_Protected.h
+cwpro\guidrv_template_1.o: ../STemWin/inc/LCD.h
+cwpro\guidrv_template_1.o: ../STemWin/inc/GUI_ConfDefaults.h
+cwpro\guidrv_template_1.o: ../STemWin/Config/GUIConf.h
+cwpro\guidrv_template_1.o: ../STemWin/inc/Global.h
+cwpro\guidrv_template_1.o: ../STemWin/inc/GUI.h
+cwpro\guidrv_template_1.o: ../STemWin/inc/GUI_Type.h
+cwpro\guidrv_template_1.o: ../STemWin/inc/GUI_Version.h
+cwpro\guidrv_template_1.o: ../STemWin/inc/GUI_Private.h
+cwpro\guidrv_template_1.o: ../STemWin/inc/GUI_Debug.h
+cwpro\guidrv_template_1.o: ../STemWin/inc/WM_GUI.h
+cwpro\guidrv_template_1.o: ../STemWin/inc/LCD_ConfDefaults.h

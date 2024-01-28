@@ -1,0 +1,11 @@
+cwpro\my_qrcode.o: ..\My\DLG\my_qrCode.c
+cwpro\my_qrcode.o: ..\My\DLG\my_qrCode.h
+cwpro\my_qrcode.o: ../STemWin/inc/GUI_Type.h
+cwpro\my_qrcode.o: ../STemWin/inc/LCD.h
+cwpro\my_qrcode.o: ../STemWin/inc/GUI_ConfDefaults.h
+cwpro\my_qrcode.o: ../STemWin/Config/GUIConf.h
+cwpro\my_qrcode.o: ../STemWin/inc/Global.h
+cwpro\my_qrcode.o: ../STemWin/inc/GUI.h
+cwpro\my_qrcode.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+cwpro\my_qrcode.o: ../STemWin/inc/GUI_Version.h
+cwpro\my_qrcode.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

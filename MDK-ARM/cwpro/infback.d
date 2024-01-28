@@ -1,0 +1,12 @@
+cwpro\infback.o: ..\My\STemWinPNG\infback.c
+cwpro\infback.o: ..\My\STemWinPNG\zutil.h
+cwpro\infback.o: ..\My\STemWinPNG\zlib.h
+cwpro\infback.o: ..\My\STemWinPNG\zconf.h
+cwpro\infback.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+cwpro\infback.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+cwpro\infback.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+cwpro\infback.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h
+cwpro\infback.o: ..\My\STemWinPNG\inftrees.h
+cwpro\infback.o: ..\My\STemWinPNG\inflate.h
+cwpro\infback.o: ..\My\STemWinPNG\inffast.h
+cwpro\infback.o: ..\My\STemWinPNG\inffixed.h
