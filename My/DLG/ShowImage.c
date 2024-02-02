@@ -191,7 +191,7 @@ int emwin_displaypng(char *PNGFileName, uint8_t mode, uint32_t x, uint32_t y)
     /* 文件打开错误或者文件大于JPEGMEMORYSIZE */
     if ((result != FR_OK) || (PNGFile.obj.objsize > PNGMEMORYSIZE))
     {
-        printf("文件打开错误\r\n");
+        printf("文件打开错误 %s\r\n",PNGFileName);
         return 1;
     }
 
