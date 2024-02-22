@@ -22,6 +22,7 @@
 #include "crc.h"
 #include "dma.h"
 #include "fatfs.h"
+#include "rng.h"
 #include "sdio.h"
 #include "spi.h"
 #include "usart.h"
@@ -58,6 +59,8 @@
  uint32_t g_sys_status = SYS_IDLE;//SYS_IDLE;
  
  uint32_t g_DiskStatus = NO_DISK_INSERTED;
+ 
+ uint32_t g_rand[256];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -110,6 +113,7 @@ int main(void)
   MX_FATFS_Init();
   MX_SDIO_SD_Init();
   MX_SPI1_Init();
+  MX_RNG_Init();
   /* USER CODE BEGIN 2 */
 	printf("hello world!!!!\r\n");
 

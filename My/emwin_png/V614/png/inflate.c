@@ -602,12 +602,59 @@ unsigned copy;
    will return Z_BUF_ERROR if it has not reached the end of the stream.
  */
 
+
+
+/*	int BITS_xx(unsigned int hold,int n)
+	{
+		#define BITS(n) \
+    ((unsigned)hold & ((1U << (n)) - 1))
+		distcode
+		int xx;
+		return xx;
+		
+	}		*/
+
+void NEEDBITS1(int n,unsigned *phave,unsigned *pbits,unsigned long *phold,const unsigned char FAR *next) {
+	unsigned have1=*phave;
+  unsigned bits1=*pbits;
+	unsigned long hold1=*phold;
+	
+    while (bits1 < (unsigned)n) {
+        if (have1 == 0) {
+            // 处理错误或返回
+            return;
+        }
+        have1--;
+        hold1 += (unsigned long)(*next++) << bits1;
+        bits1 += 8;
+    }
+		
+		*phold=hold1;
+		*pbits = bits1;
+		*phave = have1;
+}
+
+void DROPBITS1(int n,unsigned *pbits,unsigned long *phold,const unsigned char FAR *next)
+	{
+
+  unsigned bits1=*pbits;
+	unsigned long hold1=*phold;
+		hold1 >>= n; 
+    bits1 -= n; 
+		
+			*phold=hold1;
+		*pbits = bits1;	
+		
+}
+
 int ZEXPORT inflate(strm, flush)
 z_streamp strm;
 int flush;
 {
     struct inflate_state FAR *state;
     z_const unsigned char FAR *next;    /* next input */
+	//  unsigned char FAR *next;    /* next input */
+
     unsigned char FAR *put;     /* next output */
     unsigned have, left;        /* available input and output */
     unsigned long hold;         /* bit buffer */
@@ -619,6 +666,7 @@ int flush;
     code last;                  /* parent table entry */
     unsigned len;               /* length to copy for repeats, bits to drop */
     int ret;                    /* return code */
+
 #ifdef GUNZIP
     unsigned char hbuf[4];      /* buffer for gzip header crc calculation */
 #endif
@@ -642,6 +690,9 @@ int flush;
                 state->mode = TYPEDO;
                 break;
             }
+
+			//			NEEDBITS1(16,&have,&bits,&hold,next);
+
             NEEDBITS(16);
 #ifdef GUNZIP
             if ((state->wrap & 2) && hold == 0x8b1f) {  /* gzip header */
@@ -656,7 +707,7 @@ int flush;
                 state->head->done = -1;
             if (!(state->wrap & 1) ||   /* check if zlib header allowed */
 #else
-            if (
+            if (//((hold & 0xFF) << 0x8 + (hold >> 0x8)) % 0x1F;
 #endif
                 ((BITS(8) << 8) + (hold >> 8)) % 31) {
                 strm->msg = (char *)"incorrect header check";
@@ -681,7 +732,7 @@ int flush;
             Tracev((stderr, "inflate:   zlib header ok\n"));
             strm->adler = state->check = adler32(0L, Z_NULL, 0);
             state->mode = hold & 0x200 ? DICTID : TYPE;
-            INITBITS();
+             INITBITS();
             break;
 #ifdef GUNZIP
         case FLAGS:
@@ -831,10 +882,16 @@ int flush;
                 state->mode = CHECK;
                 break;
             }
+		//				NEEDBITS1(3,&have,&bits,&hold,next);
+						
             NEEDBITS(3);
-            state->last = BITS(1);
-            DROPBITS(1);
-            switch (BITS(2)) {
+            state->last = BITS (1);
+					 //  DROPBITS1(1,&bits,&hold,next);	
+						
+        
+
+						DROPBITS(1);//    hold >>= (n);      bits -= (unsigned)(n); 
+            switch (BITS(2)) {  //hold & ((1 << n) - 1)
             case 0:                             /* stored block */
                 Tracev((stderr, "inflate:     stored block%s\n",
                         state->last ? " (last)" : ""));
@@ -859,6 +916,8 @@ int flush;
                 strm->msg = (char *)"invalid block type";
                 state->mode = BAD;
             }
+						//DROPBITS1(2,&bits,&hold,next);	
+						
             DROPBITS(2);
             break;
         case STORED:
@@ -894,13 +953,37 @@ int flush;
             Tracev((stderr, "inflate:       stored end\n"));
             state->mode = TYPE;
             break;
+						
+/*#define PULLBYTE() \
+    do { \
+        if (have == 0) goto inf_leave; \
+        have--; \
+        hold += (unsigned long)(*next++) << bits; \
+        bits += 8; \
+    } while (0)
+
+
+#define NEEDBITS(n) \
+    do { \
+        while (bits < (unsigned)(n)) \
+            PULLBYTE(); \
+    } while (0)		*/
+/*#define BITS(n) \
+    ((unsigned)hold & ((1U << (n)) - 1))		*/				
+						
         case TABLE:
-            NEEDBITS(14);
-            state->nlen = BITS(5) + 257;
+             NEEDBITS(14);
+					//				NEEDBITS1(14,&have,&bits,&hold,next);
+				    {
+							unsigned short xy = BITS(5);
+							state->nlen = xy + 257;
+				    //state->nlen = BITS(5) + 257;  //HLIT
+						}
+			//	DROPBITS1(5,&bits,&hold,next);	
             DROPBITS(5);
-            state->ndist = BITS(5) + 1;
+            state->ndist = BITS(5) + 1;//HDIST
             DROPBITS(5);
-            state->ncode = BITS(4) + 4;
+            state->ncode = BITS(4) + 4;//HCLEN
             DROPBITS(4);
 #ifndef PKZIP_BUG_WORKAROUND
             if (state->nlen > 286 || state->ndist > 30) {
@@ -913,11 +996,17 @@ int flush;
             state->have = 0;
             state->mode = LENLENS;
         case LENLENS:
+			  	{
+						unsigned short xy1 , xy2;
             while (state->have < state->ncode) {
                 NEEDBITS(3);
+							//  xy1=(unsigned short)BITS(3);
+							//  xy2 = order[state->have++];
+							//  state->lens[xy2] = xy1;
                 state->lens[order[state->have++]] = (unsigned short)BITS(3);
-                DROPBITS(3);
+		            DROPBITS(3);
             }
+					}
             while (state->have < 19)
                 state->lens[order[state->have++]] = 0;
             state->next = state->codes;
@@ -1078,11 +1167,21 @@ int flush;
             state->was = state->length;
             state->mode = DIST;
         case DIST:
+				{
+					 code here1;                  /* table entry for duplication */
+						  int xx00 =0,xx11 = 0;
             for (;;) {
+			
+							
+
                 here = state->distcode[BITS(state->distbits)];
+							  xx00 = state->distbits;
+							  xx11 = BITS(xx00);
+							  here1 = state->distcode[xx11];
                 if ((unsigned)(here.bits) <= bits) break;
                 PULLBYTE();
             }
+					}
             if ((here.op & 0xf0) == 0) {
                 last = here;
                 for (;;) {

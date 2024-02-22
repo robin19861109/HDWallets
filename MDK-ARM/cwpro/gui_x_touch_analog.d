@@ -40,6 +40,7 @@ cwpro\gui_x_touch_analog.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_sr
 cwpro\gui_x_touch_analog.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_fsmc.h
 cwpro\gui_x_touch_analog.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 cwpro\gui_x_touch_analog.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
+cwpro\gui_x_touch_analog.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rng.h
 cwpro\gui_x_touch_analog.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_sd.h
 cwpro\gui_x_touch_analog.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_sdmmc.h
 cwpro\gui_x_touch_analog.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h

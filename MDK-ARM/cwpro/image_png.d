@@ -1,4 +1,4 @@
-cwpro\image_png.o: ..\My\STemWinPNG\IMAGE_PNG.c
+cwpro\image_png.o: ..\My\emwin_png\V614\png\IMAGE_PNG.c
 cwpro\image_png.o: ../STemWin/inc/GUI.h
 cwpro\image_png.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 cwpro\image_png.o: ../STemWin/inc/GUI_ConfDefaults.h

@@ -30,6 +30,7 @@ cwpro\stm32f4xx_hal_crc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_sra
 cwpro\stm32f4xx_hal_crc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_fsmc.h
 cwpro\stm32f4xx_hal_crc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 cwpro\stm32f4xx_hal_crc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
+cwpro\stm32f4xx_hal_crc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rng.h
 cwpro\stm32f4xx_hal_crc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_sd.h
 cwpro\stm32f4xx_hal_crc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_sdmmc.h
 cwpro\stm32f4xx_hal_crc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h

@@ -1,10 +1,5 @@
-cwpro\crc32.o: ..\My\STemWinPNG\crc32.c
-cwpro\crc32.o: ..\My\STemWinPNG\zutil.h
-cwpro\crc32.o: ..\My\STemWinPNG\zlib.h
-cwpro\crc32.o: ..\My\STemWinPNG\zconf.h
-cwpro\crc32.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-cwpro\crc32.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-cwpro\crc32.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-cwpro\crc32.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h
-cwpro\crc32.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
-cwpro\crc32.o: ..\My\STemWinPNG\crc32.h
+cwpro\crc32.o: ..\My\emwin_png\V614\png\crc32.c
+cwpro\crc32.o: ..\My\emwin_png\V614\png\zutil.h
+cwpro\crc32.o: ..\My\emwin_png\V614\png\zlib.h
+cwpro\crc32.o: ..\My\emwin_png\V614\png\zconf.h
+cwpro\crc32.o: ..\My\emwin_png\V614\png\crc32.h

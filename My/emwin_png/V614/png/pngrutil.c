@@ -160,6 +160,16 @@ png_read_chunk_header(png_structrp png_ptr)
     * This must be performed in a single I/O call.
     */
    png_read_data(png_ptr, buf, 8);
+	
+		{
+		int i = 0;
+		printf("png_read_chunk_header: \r\n");
+		
+		for(i=0;i<8;i++)
+		  printf("0x%x ",buf[i]);
+
+		printf("\r\n");
+	}
    length = png_get_uint_31(png_ptr, buf);
 
    /* Put the chunk name into png_ptr->chunk_name. */

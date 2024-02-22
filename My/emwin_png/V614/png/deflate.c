@@ -1553,6 +1553,12 @@ local void fill_window(s)
 }
 
 /* ===========================================================================
+ * 尽可能从输入流中复制未压缩的数据，返回当前块的状态。
+ * 由于不可压缩的数据可能不太有用，因此此函数不会在字典中插入新字符串。
+ * 此函数仅用于 level=0 压缩选项。
+ * 注意：应该对此函数进行优化，以避免额外从窗口复制到 pending_buf。
+ 
+
  * Copy without compression as much as possible from the input stream, return
  * the current block state.
  * This function does not insert new strings in the dictionary since

@@ -565,6 +565,9 @@ local void gen_bitlen(s, desc)
 }
 
 /* ===========================================================================
+ * 为给定的树和位计数生成编码（不一定是最优的）。
+ * 输入断言：数组 bl_count 包含给定树的位长度统计信息，并且所有树元素的字段 len 都已设置。
+ * 输出断言：所有非零编码长度的树元素都已设置字段 code
  * Generate the codes for a given tree and bit counts (which need not be
  * optimal).
  * IN assertion: the array bl_count contains the bit length statistics for
@@ -607,6 +610,11 @@ local void gen_codes (tree, max_code, bl_count)
 }
 
 /* ===========================================================================
+  * 构建一个哈夫曼树并分配编码位字符串和长度。
+ * 更新当前块的总位长度。
+ * 输入断言：对所有树元素都设置了 freq 字段。
+ * 输出断言：将字段 len 和 code 设置为最佳位长度和相应的编码。更新了长度 opt_len；如果 stree 不为 null，则还更新了 static_len。设置了字段 max_code。
+
  * Construct one Huffman tree and assigns the code bit strings and lengths.
  * Update the total bit length for the current block.
  * IN assertion: the field freq is set for all tree elements.
@@ -795,6 +803,7 @@ local void send_tree (s, tree, max_code)
 }
 
 /* ===========================================================================
+ * 为位长度构造哈夫曼树，并返回在 bl_order 中要发送的最后一个位长度编码的索引。
  * Construct the Huffman tree for the bit lengths and return the index in
  * bl_order of the last bit length code to send.
  */
@@ -901,6 +910,7 @@ void ZLIB_INTERNAL _tr_align(s)
 }
 
 /* ===========================================================================
+ * 确定当前块的最佳编码方式：动态树、静态树或存储，并将编码块输出到 zip 文件。
  * Determine the best encoding for the current block: dynamic trees, static
  * trees or store, and output the encoded block to the zip file.
  */

@@ -83,6 +83,10 @@ static int GUI_PNG__GetData(void * p, const U8 ** ppData, unsigned NumBytesReq, 
   pData = (U8 *)*ppData;
   pParam = (GUI_PNG_PARAM *)p;
   GUI__MEMCPY(pData, (const void *)(pParam->pFileData + Off), NumBytesReq);
+	
+	//printf("succ  GUI_PNG__GetData NumBytesReq=%d \r\n",NumBytesReq);
+
+	
   return NumBytesReq;
 }
 
@@ -200,7 +204,20 @@ static int _GetImageHeader(png_structp * ppng_ptr, png_infop * pinfo_ptr, GUI_PN
   if (png_sig_cmp(acHeader, 0, 8) != 0) {
     return 1;
   }
+	
+
   png_set_sig_bytes(png_ptr, 8);
+	
+	
+		{
+		int i = 0;
+		printf("_GetImageHeader: \r\n");
+		
+		for(i=0;i<8;i++)
+		  printf("0x%x ",acHeader[i]);
+
+		printf("%x\r\n",png_ptr->sig_bytes);
+	}
   //
   // Read all PNG info up to image data
   //

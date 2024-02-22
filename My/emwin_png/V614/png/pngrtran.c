@@ -2110,7 +2110,13 @@ defined(PNG_READ_USER_TRANSFORM_SUPPORTED)
        info_ptr->bit_depth);
 
    info_ptr->rowbytes = PNG_ROWBYTES(info_ptr->pixel_depth, info_ptr->width);
+//如果像素位数大于等于 8，那么展开为：
+//(png_size_t)(info_ptr->width) * (((png_size_t)(info_ptr->pixel_depth)) >> 3)
+//如果像素位数小于 8，那么展开为：
+//	 ( ((png_size_t)(info_ptr->width) * ((png_size_t)(info_ptr->pixel_depth))) + 7) >> 3
 
+	 
+	 
    /* Adding in 1.5.4: cache the above value in png_struct so that we can later
     * check in png_rowbytes that the user buffer won't get overwritten.  Note
     * that the field is not always set - if png_read_update_info isn't called

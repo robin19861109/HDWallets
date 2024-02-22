@@ -11,6 +11,9 @@
 const char inflate_copyright[] =
    " inflate 1.2.8 Copyright 1995-2013 Mark Adler ";
 /*
+
+如果您在产品中使用zlib库，欢迎在产品文档中包含致谢。如果由于某种原因您无法
+包含这样的致谢，我希望您能在产品的可执行文件中保留这个版权字符串。
   If you use the zlib library in a product, an acknowledgment is welcome
   in the documentation of your product. If for some reason you cannot
   include such an acknowledgment, I would appreciate that you keep this
@@ -18,6 +21,14 @@ const char inflate_copyright[] =
  */
 
 /*
+构建一组表以解码提供的规范哈夫曼编码。
+代码长度存储在lens[0..codes-1]中。结果从*table开始，其索引为0..2^bits-1。
+work是一个至少有lens个short整数的可写数组，用作工作区域。type是要生成的代码
+类型，可以是CODES、LENS或DISTS。返回值为零表示成功，-1表示无效代码，+1表示
+空间不足。返回时，table指向下一个可用条目的地址。bits是请求的根表索引位数，
+返回时它是实际的根表索引位数。如果请求大于最长代码或小于最短代码，则它将不
+同。
+
    Build a set of tables to decode the provided canonical Huffman code.
    The code lengths are lens[0..codes-1].  The result starts at *table,
    whose indices are 0..2^bits-1.  work is a writable array of at least
@@ -46,27 +57,28 @@ int ZLIB_INTERNAL inflate_table(codetype type,
                                 unsigned FAR *bits,
                                 unsigned short FAR *work)
 {
-    unsigned len;               /* a code's length in bits */
-    unsigned sym;               /* index of code symbols */
-    unsigned min, max;          /* minimum and maximum code lengths */
-    unsigned root;              /* number of index bits for root table */
-    unsigned curr;              /* number of index bits for current table */
-    unsigned drop;              /* code bits to drop for sub-table */
-    int left;                   /* number of prefix codes available */
-    unsigned used;              /* code entries in table used */
-    unsigned huff;              /* Huffman code */
-    unsigned incr;              /* for incrementing code, index */
-    unsigned fill;              /* index for replicating entries */
-    unsigned low;               /* low bits for current root entry */
-    unsigned mask;              /* mask for low root bits */
-    code here;                  /* table entry for duplication */
-    code FAR *next;             /* next available space in table */
-    const unsigned short FAR *base;     /* base value table to use */
-    const unsigned short FAR *extra;    /* extra bits table to use */
-    int end;                    /* use base and extra for symbol > end */
-    unsigned short count[MAXBITS+1];    /* number of codes of each length */
-    unsigned short offs[MAXBITS+1];     /* offsets in table for each length */
-    static const unsigned short lbase[31] = { /* Length codes 257..285 base */
+	
+    unsigned len;               /* a code's length in bits 代码的长度（以位为单位）*/
+    unsigned sym;               /* index of code symbols 代码符号的索引*/
+    unsigned min, max;          /* minimum and maximum code lengths 代码长度的最小值和最大值*/
+    unsigned root;              /* number of index bits for root table 根表的索引位数*/
+    unsigned curr;              /* number of index bits for current table 当前表的索引位数*/
+    unsigned drop;              /* code bits to drop for sub-table 用于子表的要丢弃的代码位数*/
+    int left;                   /* number of prefix codes available 可用的前缀代码数量*/
+    unsigned used;              /* code entries in table used 表中已使用的代码条目*/
+    unsigned huff;              /* Huffman code 哈夫曼编码*/
+    unsigned incr;              /* for incrementing code, index 用于增加代码和索引*/
+    unsigned fill;              /* index for replicating entries 复制条目的索引*/
+    unsigned low;               /* low bits for current root entry 当前根条目的低位*/
+    unsigned mask;              /* mask for low root bits 低位根码的掩码*/
+    code here;                  /* table entry for duplication 用于复制的表条目*/
+    code FAR *next;             /* next available space in table 表中下一个可用空间*/
+    const unsigned short FAR *base;     /* base value table to use 要使用的基础值表*/
+    const unsigned short FAR *extra;    /* extra bits table to use 要使用的额外位表*/
+    int end;                    /* use base and extra for symbol > end 对于符号 > end，使用基础值和额外位*/
+    unsigned short count[MAXBITS+1];    /* number of codes of each length 每个长度的代码数量*/
+    unsigned short offs[MAXBITS+1];     /* offsets in table for each length 每个长度在表中的偏移量*/
+    static const unsigned short lbase[31] = { /* Length codes 257..285 base 长度代码 257..285 的基础*/
         3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
         35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 0, 0};
     static const unsigned short lext[31] = { /* Length codes 257..285 extra */
@@ -82,6 +94,22 @@ int ZLIB_INTERNAL inflate_table(codetype type,
         28, 28, 29, 29, 64, 64};
 
     /*
+		处理一组代码长度以创建一个规范的哈夫曼编码。代码长度存储在lens[0..codes-1]中。每个长度对应于符号0..codes-1。
+		哈夫曼编码是通过首先按长度从短到长对符号进行排序，并保留相同长度的代码的符号顺序来生成的。然后，编码以最短长度的
+		第一个代码的所有零位开始，并且相同长度的代码是整数增量，随着长度的增加会追加零位。对于deflate格式，这些位是以它们
+		更自然的整数增量顺序相反存储的，因此在下面的大循环中构建解码表时，整数编码是以相反顺序增加的。
+
+   此程序假设（但不检查）lens[]中的所有条目都在0..MAXBITS范围内。调用者必须确保这一点。
+	1..MAXBITS被解释为该代码长度。零表示该符号在此代码中不存在。
+
+   通过计算每个长度的代码计数来对代码进行排序，从而创建一个用于在排序表中每个长度的起始索引的表，
+	然后按顺序将符号输入到排序表中。排序表是work[]，调用者提供了该空间。
+
+   长度计数还用于其他目的，例如查找最小和最大长度代码，确定是否存在任何代码，检查有效长度集，并在构建解码表时提前查看
+	长度计数以确定子表大小。
+	
+				
+				
        Process a set of code lengths to create a canonical Huffman code.  The
        code lengths are lens[0..codes-1].  Each length corresponds to the
        symbols 0..codes-1.  The Huffman code is generated by first sorting the
@@ -115,10 +143,10 @@ int ZLIB_INTERNAL inflate_table(codetype type,
     /* accumulate lengths for codes (assumes lens[] all in 0..MAXBITS) */
     for (len = 0; len <= MAXBITS; len++)
         count[len] = 0;
-    for (sym = 0; sym < codes; sym++)
+    for (sym = 0; sym < codes; sym++)//codes=19
         count[lens[sym]]++;
 
-    /* bound code lengths, force root to be within code lengths */
+    /* bound code lenzgths, force root to be within code lengths 限制代码长度，强制根节点在代码长度范围内*/
     root = *bits;
     for (max = MAXBITS; max >= 1; max--)
         if (count[max] != 0) break;
@@ -156,6 +184,23 @@ int ZLIB_INTERNAL inflate_table(codetype type,
         if (lens[sym] != 0) work[offs[lens[sym]]++] = (unsigned short)sym;
 
     /*
+		
+	### 创建并填充解码表。在此循环中，被填充的表位于 next，并且具有 curr 索引位数。正在使用的代码是具有长度 len 的 huff。通过从底部删除 drop 位，
+		将该代码转换为索引。对于长度小于 drop + curr 的代码，通过递增顶部的 drop + curr - len 位来填充表以复制条目。
+
+### root 是根表的索引位数。当 len 超过 root 时，将创建由 root 条目指向的子表，其索引为 huff 的低 root 位。这被保存在 low 中，以检查何时应开始新的子表。
+		当填充根表时，drop 为零，当填充子表时，drop 为 root。
+
+### 当需要新的子表时，需要向前查看代码长度，以确定需要什么大小的子表。length 计数用于此目的，因此随着代码输入到表中，count[] 递减。
+
+### used 跟踪从提供的 *table 空间中分配了多少表条目。对于 LENS 和 DIST 表，针对常量 ENOUGH_LENS 和 ENOUGH_DISTS 进行检查，以防止初始根表大小常量发
+生变化。有关更多信息，请参阅 inftrees.h 文件中的注释。
+
+### sym 递增遍历所有符号，并且循环在所有长度为 max 的代码（即所有代码）被处理时终止。此例程允许不完整的代码，因此在此后的另一个循环中，将使用无效代码标
+记来填充解码表的其余部分。
+	
+		
+		
        Create and fill in decoding tables.  In this loop, the table being
        filled is at next and has curr index bits.  The code being used is huff
        with length len.  That code is converted to an index by dropping drop

@@ -8,7 +8,15 @@
    subject to change. Applications should only use zlib.h.
  */
 
-/* Structure for decoding tables.  Each entry provides either the
+/* 
+   每个条目提供执行由索引该表条目的代码请求的操作所需的信息，或者提
+	 供指向另一个表的指针，该表索引更多的代码位。op 指示条目是指向另一
+	 个表、字面值、长度或距离、块结束，还是无效代码。对于表指针，op 的
+	 低四位是该表的索引位数。对于长度或距离，op 的低四位是代码后的额外
+	 位数。bits 是要从位缓冲器中删除的代码或代码部分的位数。val 是字面值、
+	 基本长度或距离，或者是从当前表到下一个表的偏移量。每个条目占四个字节。
+
+   Structure for decoding tables.  Each entry provides either the
    information needed to do the operation requested by the code that
    indexed that table entry, or it provides a pointer to another
    table that indexes more bits of the code.  op indicates whether
@@ -22,9 +30,9 @@
    of a literal, the base length or distance, or the offset from
    the current table to the next table.  Each entry is four bytes. */
 typedef struct {
-    unsigned char op;           /* operation, extra bits, table bits */
-    unsigned char bits;         /* bits in this part of the code */
-    unsigned short val;         /* offset in table or code value */
+    unsigned char op;           /* operation, extra bits, table bits 操作，额外位数，表位数*/
+    unsigned char bits;         /* bits in this part of the code 该代码部分中的位数*/
+    unsigned short val;         /* offset in table or code value 表中的偏移量或代码值*/
 } code;
 
 /* op values as set by inflate_table():
@@ -35,7 +43,16 @@ typedef struct {
     01000000 - invalid code
  */
 
-/* Maximum size of the dynamic table.  The maximum number of code structures is
+/* 
+### 动态表的最大尺寸。代码结构的最大数量是 1444，其中 852 用于字面/长度代码，
+592 用于距离代码。通过使用 zlib 发行版中的程序 examples/enough.c 进行详尽搜索，
+找到了这些值。该程序的参数是符号数量、初始根表大小和代码的最大位长度。对于字面/长度代码，
+"enough 286 9 15" 返回 852；对于距离代码，"enough 30 6 15" 返回 592。初始根表大小（9 或 6）
+位于 inflate.c 和 infback.c 中的 inflate_table() 调用的第五个参数中。如果更改根表大小，
+那么这些最大尺寸需要重新计算和更新。
+
+
+   Maximum size of the dynamic table.  The maximum number of code structures is
    1444, which is the sum of 852 for literal/length codes and 592 for distance
    codes.  These values were found by exhaustive searches using the program
    examples/enough.c found in the zlib distribtution.  The arguments to that

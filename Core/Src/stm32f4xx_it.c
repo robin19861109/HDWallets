@@ -58,6 +58,7 @@
 
 /* External variables --------------------------------------------------------*/
 extern HCD_HandleTypeDef hhcd_USB_OTG_FS;
+extern RNG_HandleTypeDef hrng;
 extern DMA_HandleTypeDef hdma_sdio_rx;
 extern DMA_HandleTypeDef hdma_sdio_tx;
 extern SD_HandleTypeDef hsd;
@@ -239,6 +240,20 @@ void DMA2_Stream6_IRQHandler(void)
   /* USER CODE BEGIN DMA2_Stream6_IRQn 1 */
 
   /* USER CODE END DMA2_Stream6_IRQn 1 */
+}
+
+/**
+  * @brief This function handles HASH and RNG global interrupts.
+  */
+void HASH_RNG_IRQHandler(void)
+{
+  /* USER CODE BEGIN HASH_RNG_IRQn 0 */
+
+  /* USER CODE END HASH_RNG_IRQn 0 */
+  HAL_RNG_IRQHandler(&hrng);
+  /* USER CODE BEGIN HASH_RNG_IRQn 1 */
+
+  /* USER CODE END HASH_RNG_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

@@ -34,13 +34,13 @@ png_create_read_struct,(png_const_charp user_png_ver, png_voidp error_ptr,
        warn_fn, NULL, NULL, NULL);
 }
 
-/* Alternate create PNG structure for reading, and allocate any memory
- * needed.
- */
-PNG_FUNCTION(png_structp,PNGAPI
+/* Alternate create PNG structure for reading, and allocate any memory  needed. */
+__attribute__((__malloc__)) png_structp PNGAPI png_create_read_struct_2(png_const_charp user_png_ver, png_voidp error_ptr, png_error_ptr error_fn, png_error_ptr warn_fn, png_voidp mem_ptr, png_malloc_ptr malloc_fn, png_free_ptr free_fn)
+
+/*PNG_FUNCTION(png_structp,PNGAPI
 png_create_read_struct_2,(png_const_charp user_png_ver, png_voidp error_ptr,
     png_error_ptr error_fn, png_error_ptr warn_fn, png_voidp mem_ptr,
-    png_malloc_ptr malloc_fn, png_free_ptr free_fn),PNG_ALLOCATED)
+    png_malloc_ptr malloc_fn, png_free_ptr free_fn),PNG_ALLOCATED)*/
 {
    png_structp png_ptr = png_create_png_struct(user_png_ver, error_ptr,
       error_fn, warn_fn, mem_ptr, malloc_fn, free_fn);
@@ -186,6 +186,7 @@ png_read_info(png_structrp png_ptr, png_inforp info_ptr)
       else if (chunk_name == png_oFFs)
          png_handle_oFFs(png_ptr, info_ptr, length);
 #endif
+			
 
 #ifdef PNG_READ_pCAL_SUPPORTED
       else if (chunk_name == png_pCAL)
@@ -608,7 +609,22 @@ png_read_row(png_structrp png_ptr, png_bytep row, png_bytep dsp_row)
 #endif /* SEQUENTIAL_READ */
 
 #ifdef PNG_SEQUENTIAL_READ_SUPPORTED
-/* Read one or more rows of image data.  If the image is interlaced,
+/*
+   读取一行或多行图像数据。如果图像是隔行扫描的，并且已调用了png_set_interlace_handling()，
+   则行需要包含上一次传递的行的内容。如果图像具有alpha通道或透明度，并且已调用了png_handle_alpha()[*]，
+   则行的内容必须初始化为屏幕的内容。
+
+   "row"保存实际图像，像素会随着到达而被放置在其中。如果在每次传递后显示图像，它将会"闪烁"出现。
+     "display_row"可用于显示"粗糙"的渐进图像，随着细节的逐渐出现。如果不想要这种"粗糙"的显示，
+   可以为display_row传递NULL。如果不想要"闪烁"显示，并且尚未调用png_handle_alpha()，可以为行传递NULL。
+    如果已调用png_handle_alpha()，并且图像具有alpha通道或透明度块，则必须为行提供缓冲区。在这种情况下，
+     您不必提供display_row缓冲区，但可以提供。如果图像不是隔行扫描的，或者尚未调用png_set_interlace_handling()，
+      则将忽略display_row缓冲区，因此可以将其设为NULL。
+
+[*] 截至此版本的libpng，png_handle_alpha()尚不存在
+
+
+* Read one or more rows of image data.  If the image is interlaced,
  * and png_set_interlace_handling() has been called, the rows need to
  * contain the contents of the rows from the previous pass.  If the
  * image has alpha or transparency, and png_handle_alpha()[*] has been
@@ -739,11 +755,17 @@ png_read_image(png_structrp png_ptr, png_bytepp image)
    for (j = 0; j < pass; j++)
    {
       rp = image;
-      for (i = 0; i < image_height; i++)
+      for (i = 0; i < image_height-2; i++)
       {
          png_read_row(png_ptr, *rp, NULL);
+				 if(i==9)
+					 printf("png_read_row image_height=%d",image_height);
          rp++;
       }
+			png_read_row(png_ptr, *rp, NULL);
+         rp++;
+				png_read_row(png_ptr, *rp, NULL);
+         rp++;		
    }
 }
 #endif /* SEQUENTIAL_READ */

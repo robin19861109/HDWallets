@@ -31,6 +31,7 @@ cwpro\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_sram.h
 cwpro\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_fsmc.h
 cwpro\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 cwpro\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
+cwpro\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rng.h
 cwpro\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_sd.h
 cwpro\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_sdmmc.h
 cwpro\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h
@@ -80,6 +81,7 @@ cwpro\main.o: ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h
 cwpro\main.o: ../Middlewares/Third_Party/FatFs/src/diskio.h
 cwpro\main.o: ../FATFS/Target/sd_diskio.h
 cwpro\main.o: ../FATFS/Target/usbh_diskio.h
+cwpro\main.o: ../Core/Inc/rng.h
 cwpro\main.o: ../Core/Inc/sdio.h
 cwpro\main.o: ../Core/Inc/spi.h
 cwpro\main.o: ../Core/Inc/usart.h

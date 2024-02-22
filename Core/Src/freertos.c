@@ -40,6 +40,7 @@
 #include "SelectImgWin.h"
 #include "enterImgPwd.h"
 #include "resultDLG.h"
+#include "rng.h"
 //#include "enterImgPwd.h"
 
 //#include "FramewinDLG.h"
@@ -144,7 +145,7 @@ void MX_FREERTOS_Init(void) {
   Task_touchHandle = osThreadCreate(osThread(Task_touch), NULL);
 
   /* definition and creation of Task_main */
-  osThreadDef(Task_main, StartTask_main, osPriorityNormal, 0, 2048);
+  osThreadDef(Task_main, StartTask_main, osPriorityNormal, 0, 3072);
   Task_mainHandle = osThreadCreate(osThread(Task_main), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -168,20 +169,17 @@ void StartDefaultTask(void const * argument)
   /* init code for USB_HOST */
   MX_USB_HOST_Init();
   /* USER CODE BEGIN StartDefaultTask */
-
+  uint32_t rng_val = 0;
   /* Infinite loop */
   for(;;)
   {
-		
-
-
-		
+	
 		
 		osDelay(2000);
  //   GUI_Delay(1000);
 //		AT24C02_Read(0,(uint8_t *)xx,sizeof(xx));
-		
-		printf("yyyyyyyyyyyyyyyyyy\r\n");
+		rng_val = HAL_RNG_GetRandomNumber(&hrng);
+	//	printf("yyyyyyyyyyyyyyyyyy rng_val=%x\r\n",rng_val);
 		
 //		if(g_sys_status==SYS_CREATE_WALLET)
 			

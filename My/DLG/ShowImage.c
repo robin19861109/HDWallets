@@ -34,6 +34,7 @@
 #include "malloc.h"
 #include "ff.h"
 #include "my_lcd.h"
+#include "png.h"
 /*****************************************************************************************************/
 
 
@@ -66,6 +67,49 @@ static FIL PNGFile;
 * Return value:
 *   Number of data bytes available.
 */
+
+/**
+* @brief 从存储器中读取数据
+* @note 无
+* @param
+* @retval NumBytesRead：读到的字节数
+*/
+static int emwin_png_get_data1(void * p, const U8 ** ppData, unsigned NumBytesReq,
+                    U32 Off)
+{
+    U8 *pData;
+    FIL *Picfile;
+    UINT NumBytesRead;
+    static int FileAddr = 0;
+	  int ret;
+
+    pData = (U8 *)*ppData;
+    Picfile = (FIL *)p;
+
+    if (Off == 1) FileAddr = 0;
+    else FileAddr = Off;
+    f_lseek(Picfile, FileAddr);
+
+    /* 进入临界段 */
+   #if SYS_SUPPORT_OS
+	//GUI_X_Lock();
+ //   taskENTER_CRITICAL(); /* 临界区 */
+#endif
+    ret = f_read(Picfile, pData, NumBytesReq, &NumBytesRead);
+    /* 退出临界段 */
+#if SYS_SUPPORT_OS
+  //GUI_X_Unlock();
+//  taskEXIT_CRITICAL(); /* 退出临界区 */
+#endif
+ /* if(NumBytesReq!=NumBytesRead)
+		printf("err  emwin_png_get_data NumBytesReq=%d NumBytesRead=%d ret=%d\r\n",NumBytesReq,NumBytesRead,ret);
+	else
+		printf("succ  emwin_png_get_data NumBytesReq=%d NumBytesRead=%d ret=%d\r\n",NumBytesReq,NumBytesRead,ret);*/
+  if(NumBytesRead>=2000)
+	  printf("NumBytesRead = %d NumBytesReq=%d\r\n",NumBytesRead,NumBytesReq);
+    return NumBytesRead;
+}
+
 static int emwin_png_get_data(void *p, const U8 **ppData, unsigned NumBytesReq, U32 Off)
 {
     CPU_SR_ALLOC();
@@ -99,8 +143,11 @@ static int emwin_png_get_data(void *p, const U8 **ppData, unsigned NumBytesReq, 
 		printf("err  emwin_png_get_data NumBytesReq=%d NumBytesRead=%d ret=%d\r\n",NumBytesReq,NumBytesRead,ret);
 	else
 		printf("succ  emwin_png_get_data NumBytesReq=%d NumBytesRead=%d ret=%d\r\n",NumBytesReq,NumBytesRead,ret);
-  
-  return NumBytesRead; /* 返回读取到的字节数 */
+ 
+ // if(NumBytesRead>8000)
+	//	printf("NumBytesRead = %d NumBytesReq=%d\r\n",NumBytesRead,NumBytesReq);
+	
+	return NumBytesRead; /* 返回读取到的字节数 */
 	
 }
 
@@ -271,12 +318,11 @@ int emwin_displaypngex(char *PNGFileName, uint8_t mode, uint32_t x, uint32_t y)
 
     /* 文件打开错误 */
     if (result != FR_OK) return 1;
-	  printf("2aaaaaaaaaaaaaaaaaaaa\r\n");
 
     XSize = GUI_PNG_GetXSizeEx(emwin_png_get_data, &PNGFile); /* PNG图片X大小 */
-		  printf("3aaaaaaaaaaaaaaaaaaaa\r\n");
     YSize = GUI_PNG_GetYSizeEx(emwin_png_get_data, &PNGFile); /* PNG图片Y大小 */
-		  printf("4aaaaaaaaaaaaaaaaaaaa\r\n");
+    
+	  printf("GUI_PNG_GetXSizeEx XSize=%d  YSize=%d \r\n",XSize,YSize);
 
     switch (mode)
     {

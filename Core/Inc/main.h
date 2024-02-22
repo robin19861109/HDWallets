@@ -51,6 +51,7 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 extern uint32_t g_sys_status;
+extern uint32_t g_rand[];
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

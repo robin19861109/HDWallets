@@ -1,4 +1,4 @@
-#include "SelectImgWin.h"
+                                                                                                                                                                                      #include "SelectImgWin.h"
 #include "BUTTON.h"
 #include "ShowImage.h"
 #include "common.h"
@@ -53,7 +53,11 @@ static void _cbBkWin1(WM_MESSAGE *pMsg)
 									if(curindex>0)
 									{
 										curindex--;
-									}										
+									}	
+									else
+									{
+										curindex=info_PicFile.num_file-1;
+									}
 									
 									 WM_InvalidateWindow(pMsg->hWin);      /* 主窗口失效 */
                 //    WM_InvalidateWindow(_hWin[0]);          /* 窗口1失效 */
@@ -68,7 +72,9 @@ static void _cbBkWin1(WM_MESSAGE *pMsg)
 									{
 										
 										curindex++;
-									}									
+									}
+									else
+										curindex=0;
                    // WM_InvalidateWindow(pMsg->hWin);      /* 主窗口失效 */
                 }
 		            else if (pMsg->hWinSrc == _hBut[2])         /* button2被释放 */
@@ -161,7 +167,7 @@ void invokeSeleImgWin(void)
 							GUI_ClearRect(0, 0, 239, 239);
 			        printf("Prev curindex=%d pname=%s \r\n",curindex,pname);
 					//	emwin_displaypng("0:/PICTURE/微软.png", 1, 200, 100);
-						emwin_displaypng(pname, 0, 5, 5);
+						emwin_displaypngex(pname, 0, 5, 5);
 					//		emwin_displaypng(pname, 1, 200, 100);
         	//			  	SelectImage1(NULL,1);
 							GUI_Delay(5);
@@ -176,7 +182,7 @@ void invokeSeleImgWin(void)
 		/*        if(curindex==5)
 	  			     emwin_displaypng("0:/PICTURE/PNG/企鹅.png", 1, 200, 100);
 						else*/
-							emwin_displaypng(pname, 1, 200, 100);
+							emwin_displaypngex(pname, 1, 200, 100);
         	//			  	SelectImage1(NULL,1);
 		  		  status=0;
 			      GUI_Delay(5);

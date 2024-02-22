@@ -57,7 +57,7 @@ Purpose     : Display controller initialization
 //
 // Define the available number of bytes available for the GUI
 //
-#define GUI_NUMBYTES  (700*1024)
+#define GUI_NUMBYTES  (500*1024)
 #define GUI_BLOCKSIZE 0X80  //¿é´óÐ¡
 
 /*********************************************************************

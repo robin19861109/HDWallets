@@ -30,6 +30,35 @@
 #endif
 
 /*
+
+```markdown
+### 解码字面值、长度和距离代码，并输出结果的字面值和匹配字节，直到输入或输出不足，遇到块结束，或遇到数据错误为止。当提供足够大的输入和输出缓冲区给 inflate() 时，
+例如，16K 的输入缓冲区和 64K 的输出缓冲区，95% 以上的 inflate 执行时间都在这个例程中度过。
+
+入口假设：
+
+    state->mode == LEN
+    strm->avail_in >= 6
+    strm->avail_out >= 258
+    start >= strm->avail_out
+    state->bits < 8
+
+返回时，state->mode 是以下之一：
+
+    LEN -- 无足够的输出空间或足够的可用输入
+    TYPE -- 到达块结束代码，inflate() 解释下一个块
+    BAD -- 块数据错误
+
+备注：
+
+    - 长度/距离对使用的最大输入位是 15 位长度代码，5 位长度额外，15 位距离代码，13 位距离额外。总共为 48 位，或六个字节。因此，如果 strm->avail_in >= 6，
+		则有足够的输入以避免在解码时检查可用输入。
+
+    - 单个长度/距离对输出的最大字节数是 258 字节，这是可以编码的最大长度。inflate_fast() 需要每次循环 strm->avail_out >= 258，以避免检查输出空间。
+```
+
+
+
    Decode literal, length, and distance codes and write out the resulting
    literal and match bytes until either not enough input or output is
    available, an end-of-block is encountered, or a data error is encountered.
