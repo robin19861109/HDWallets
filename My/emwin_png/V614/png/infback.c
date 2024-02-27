@@ -167,7 +167,8 @@ struct inflate_state FAR *state;
         } \
     } while (0)
 
-/* Get a byte of input into the bit accumulator, or return from inflateBack()
+/* 将一个字节的输入存入位累加器中，如果没有可用的输入，则从 inflateBack() 返回错误。
+		Get a byte of input into the bit accumulator, or return from inflateBack()
    with an error if there is no input available. */
 #define PULLBYTE() \
     do { \

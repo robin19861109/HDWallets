@@ -4018,7 +4018,13 @@ png_read_IDAT_data(png_structrp png_ptr, png_bytep output,
          png_ptr->zstream.avail_out = (sizeof tmpbuf);
       }
 
-      /* Use NO_FLUSH; this gives zlib the maximum opportunity to optimize the
+      /*
+			使用 NO_FLUSH；这样可以让 zlib 在优化过程中有最大的机会。如果 LZ 流被截断，
+			顺序读取器将通过读取下一个分块的块头来终止性地损坏流（然后以 png_error 退出）。
+
+     待办事项：更优雅地处理被截断的 IDAT 列表。
+			
+			  * Use NO_FLUSH; this gives zlib the maximum opportunity to optimize the
        * process.  If the LZ stream is truncated the sequential reader will
        * terminally damage the stream, above, by reading the chunk header of the
        * following chunk (it then exits with png_error).

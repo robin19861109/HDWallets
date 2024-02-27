@@ -35,12 +35,12 @@ png_create_read_struct,(png_const_charp user_png_ver, png_voidp error_ptr,
 }
 
 /* Alternate create PNG structure for reading, and allocate any memory  needed. */
-__attribute__((__malloc__)) png_structp PNGAPI png_create_read_struct_2(png_const_charp user_png_ver, png_voidp error_ptr, png_error_ptr error_fn, png_error_ptr warn_fn, png_voidp mem_ptr, png_malloc_ptr malloc_fn, png_free_ptr free_fn)
+//__attribute__((__malloc__)) png_structp PNGAPI png_create_read_struct_2(png_const_charp user_png_ver, png_voidp error_ptr, png_error_ptr error_fn, png_error_ptr warn_fn, png_voidp mem_ptr, png_malloc_ptr malloc_fn, png_free_ptr free_fn)
 
-/*PNG_FUNCTION(png_structp,PNGAPI
+PNG_FUNCTION(png_structp,PNGAPI
 png_create_read_struct_2,(png_const_charp user_png_ver, png_voidp error_ptr,
     png_error_ptr error_fn, png_error_ptr warn_fn, png_voidp mem_ptr,
-    png_malloc_ptr malloc_fn, png_free_ptr free_fn),PNG_ALLOCATED)*/
+    png_malloc_ptr malloc_fn, png_free_ptr free_fn),PNG_ALLOCATED)
 {
    png_structp png_ptr = png_create_png_struct(user_png_ver, error_ptr,
       error_fn, warn_fn, mem_ptr, malloc_fn, free_fn);
@@ -215,7 +215,10 @@ png_read_info(png_structrp png_ptr, png_inforp info_ptr)
 
 #ifdef PNG_READ_iCCP_SUPPORTED
       else if (chunk_name == png_iCCP)
+			{
          png_handle_iCCP(png_ptr, info_ptr, length);
+				 printf("png_handle_iCCP end end !!!!\r\n");
+			}
 #endif
 
 #ifdef PNG_READ_sPLT_SUPPORTED
@@ -440,7 +443,13 @@ png_read_row(png_structrp png_ptr, png_bytep row, png_bytep dsp_row)
 #endif /* WARNINGS */
 
 #ifdef PNG_READ_INTERLACING_SUPPORTED
-   /* If interlaced and we do not need a new row, combine row and return.
+   /* 
+	如果是隔行扫描并且我们不需要新的行，则合并行并返回。
+
+请注意，我们从之前行中获取的像素已经被转换过；我们只能将相同类型的像素
+	 （转换过的或者未转换过的）进行合并，而且由于 libpng 用于隔行图像的 API，
+	 这意味着我们必须在去隔行前进行转换。 
+	 If interlaced and we do not need a new row, combine row and return.
     * Notice that the pixels we have from previous rows have been transformed
     * already; we can only combine like with like (transformed or
     * untransformed) and, because of the libpng API for interlaced images, this
@@ -755,18 +764,16 @@ png_read_image(png_structrp png_ptr, png_bytepp image)
    for (j = 0; j < pass; j++)
    {
       rp = image;
-      for (i = 0; i < image_height-2; i++)
+      for (i = 0; i < image_height; i++)
       {
          png_read_row(png_ptr, *rp, NULL);
 				 if(i==9)
-					 printf("png_read_row image_height=%d",image_height);
+					 printf("png_read_row image_height=%d\r\n",image_height);
          rp++;
       }
-			png_read_row(png_ptr, *rp, NULL);
-         rp++;
-				png_read_row(png_ptr, *rp, NULL);
-         rp++;		
+	
    }
+	 printf("yyyyyyyyyyyyyyyyyy\r\n");
 }
 #endif /* SEQUENTIAL_READ */
 

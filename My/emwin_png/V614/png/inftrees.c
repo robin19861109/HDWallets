@@ -40,26 +40,26 @@ work是一个至少有lens个short整数的可写数组，用作工作区域。type是要生成的代码
    table index bits.  It will differ if the request is greater than the
    longest code or if it is less than the shortest code.
  */
-/*
-int ZLIB_INTERNAL inflate_table(type, lens, codes, table, bits, work)
-codetype type;
-unsigned short FAR *lens;
-unsigned codes;
-code FAR * FAR *table;
-unsigned FAR *bits;
-unsigned short FAR *work;
-{
-*/
-int ZLIB_INTERNAL inflate_table(codetype type,
+
+/*int ZLIB_INTERNAL inflate_table(codetype type,
                                 unsigned short FAR *lens,
                                 unsigned codes,
                                 code FAR * FAR *table,
                                 unsigned FAR *bits,
                                 unsigned short FAR *work)
+{*/
+/*inflate_table(CODES, state->lens, 19, &(state->next),
+                                &(state->lenbits), state->work);*/
+int ZLIB_INTERNAL inflate_table(type, lens, codes, table, bits1, work)
+codetype type;
+unsigned short FAR *lens;
+unsigned codes;
+code FAR * FAR *table;
+unsigned FAR *bits1;
+unsigned short FAR *work;
 {
-	
-    unsigned len;               /* a code's length in bits 代码的长度（以位为单位）*/
-    unsigned sym;               /* index of code symbols 代码符号的索引*/
+    unsigned len1;               /* a code's length in bits 代码的长度（以位为单位）*/
+    unsigned sym1;               /* index of code symbols 代码符号的索引*/
     unsigned min, max;          /* minimum and maximum code lengths 代码长度的最小值和最大值*/
     unsigned root;              /* number of index bits for root table 根表的索引位数*/
     unsigned curr;              /* number of index bits for current table 当前表的索引位数*/
@@ -140,14 +140,16 @@ int ZLIB_INTERNAL inflate_table(codetype type,
        decoding tables.
      */
 
-    /* accumulate lengths for codes (assumes lens[] all in 0..MAXBITS) */
-    for (len = 0; len <= MAXBITS; len++)
-        count[len] = 0;
-    for (sym = 0; sym < codes; sym++)//codes=19
-        count[lens[sym]]++;
+    /* accumulate lengths for codes (assumes lens[] all in 0..MAXBITS) 累积代码长度（假设 lens[] 都在 0 到 MAXBITS 之间）*/
+   //lens[] 为符号表中符号的码长度 count[]为每个码长度的个数，0为此码没有出现
+
+for (len1 = 0; len1 <= MAXBITS; len1++)//MAXBITS=15
+        count[len1] = 0;
+    for (sym1 = 0; sym1 < codes; sym1++)//codes=19
+        count[lens[sym1]]++;
 
     /* bound code lenzgths, force root to be within code lengths 限制代码长度，强制根节点在代码长度范围内*/
-    root = *bits;
+    root = *bits1;
     for (max = MAXBITS; max >= 1; max--)
         if (count[max] != 0) break;
     if (root > max) root = max;
@@ -157,32 +159,84 @@ int ZLIB_INTERNAL inflate_table(codetype type,
         here.val = (unsigned short)0;
         *(*table)++ = here;             /* make a table to force an error */
         *(*table)++ = here;
-        *bits = 1;
+        *bits1 = 1;
         return 0;     /* no symbols, but wait for decoding to report error */
     }
     for (min = 1; min < max; min++)
         if (count[min] != 0) break;
     if (root < min) root = min;
 
-    /* check for an over-subscribed or incomplete set of lengths */
+    /* check for an over-subscribed or incomplete set of lengths 检查是否存在过度订阅或不完整的长度集合*/
+							{
+							int ii=0;
+						  printf("count[len]:\r\n");
+							for(ii=1;ii<=MAXBITS;ii++)
+							{
+								printf("%d ",count[ii]);
+							}
+							printf("\r\n");
+						}	
     left = 1;
-    for (len = 1; len <= MAXBITS; len++) {
+    for (len1 = 1; len1 <= MAXBITS; len1++) {
         left <<= 1;
-        left -= count[len];
+        left -= count[len1];
         if (left < 0) return -1;        /* over-subscribed */
     }
     if (left > 0 && (type == CODES || max != 1))
         return -1;                      /* incomplete set */
 
-    /* generate offsets into symbol table for each length for sorting */
-    offs[1] = 0;
-    for (len = 1; len < MAXBITS; len++)
-        offs[len + 1] = offs[len] + count[len];
+    /* generate offsets into symbol table for each length for sorting 为每个长度生成符号表的偏移量，以便排序*/
+   
 
-    /* sort symbols by length, by symbol order within each length */
-    for (sym = 0; sym < codes; sym++)
-        if (lens[sym] != 0) work[offs[lens[sym]]++] = (unsigned short)sym;
 
+		offs[1] = 0;
+    for (len1 = 1; len1 < MAXBITS; len1++)
+		{
+        offs[len1 + 1] = offs[len1] + count[len1];
+	//		  printf("len+1 = %d  offs[len + 1]=%d  offs[len]=%d  count[len]=%d\r\n",len1+1, offs[len1 + 1],  offs[len1],count[len1]);
+		}
+		
+							{
+							int ii=0;
+						  printf("offs[len]:\r\n");
+							for(ii=1;ii<=MAXBITS;ii++)
+							{
+								printf(" %d",offs[ii]);
+							}
+							printf("\r\n");
+						}			
+    printf("ppppppppppppppppppp\r\n");
+    /* sort symbols by length, by symbol order within each length 按照长度以及每个长度内的符号顺序对符号进行排序*/
+   
+  //  for (sym = 0; sym < codes; sym++)
+ //       if (lens[sym] != 0) work[offs[lens[sym]]++] = (unsigned short)sym;
+
+
+    for (sym1 = 0; sym1 < codes; sym1++)
+		{
+	//printf("lens[%d]=%d	 offs[%d]=%d  work[%d]=%d\r\n",sym,lens[sym],lens[sym],offs[lens[sym]],offs[lens[sym]],work[offs[lens[sym]]]);
+					
+        if (lens[sym1] != 0) 
+				{
+
+					work[offs[lens[sym1]]] = (unsigned short)sym1;
+					
+	//				printf("lens[%d]=%d	 offs[%d]=%d  work[%d]=%d\r\n",sym,lens[sym],lens[sym],offs[lens[sym]],offs[lens[sym]],work[offs[lens[sym]]]);
+					offs[lens[sym1]]++;
+				}		
+							
+		}
+    {
+							int ii=0;
+						  printf("work[]:\r\n");
+							for(ii=0;ii<codes;ii++)
+							{
+								printf(" %d",work[ii]);
+							}
+							printf("\r\n");
+		}	
+
+					
     /*
 		
 	### 创建并填充解码表。在此循环中，被填充的表位于 next，并且具有 curr 索引位数。正在使用的代码是具有长度 len 的 huff。通过从底部删除 drop 位，
@@ -251,22 +305,24 @@ int ZLIB_INTERNAL inflate_table(codetype type,
     }
 
     /* initialize state for loop */
-    huff = 0;                   /* starting code */
-    sym = 0;                    /* starting code symbol */
-    len = min;                  /* starting code length */
-    next = *table;              /* current table to fill in */
-    curr = root;                /* current table index bits */
-    drop = 0;                   /* current bits to drop from code for index */
-    low = (unsigned)(-1);       /* trigger new sub-table when len > root */
-    used = 1U << root;          /* use root table entries */
-    mask = used - 1;            /* mask for comparing low */
+		
+		unsigned len;
+    huff = 0;                   /* starting code 起始编码*/
+    int sym = 0;                    /* starting code symbol 起始编码符号*/
+    len = min;                  /* starting code length 起始编码长度，当前的编码长度*/
+    next = *table;              /* current table to fill in 当前要填充的表*/
+    curr = root;                /* current table index bits 当前表索引位，当前出现次数最多的符号的出现次数，理应编码长度最短*/
+    drop = 0;                   /* current bits to drop from code for index 从编码中为索引丢弃的当前位数 */
+    low = (unsigned)(-1);       /* trigger new sub-table when len > root 当 len > root 时，触发新的子表*/
+    used = 1U << root;          /* use root table entries 使用根表条目*/
+    mask = used - 1;            /* mask for comparing low 用于比较 low 的掩码*/
 
     /* check available table space */
     if ((type == LENS && used > ENOUGH_LENS) ||
         (type == DISTS && used > ENOUGH_DISTS))
         return 1;
 
-    /* process all codes and make table entries */
+    /* process all codes and make table entries 处理所有编码并生成表条目*/
     for (;;) {
         /* create table entry */
         here.bits = (unsigned char)(len - drop);
@@ -282,9 +338,12 @@ int ZLIB_INTERNAL inflate_table(codetype type,
             here.op = (unsigned char)(32 + 64);         /* end of block */
             here.val = 0;
         }
-
-        /* replicate for those indices with low len bits equal to huff */
-        incr = 1U << (len - drop);
+				 
+				printf("type=%d here.bits=%d  here.op=%d  here.val=%d \r\n",type, here.bits, here.op, here.val);
+ 
+        /* replicate for those indices with low len bits equal to huff 复制那些索引的低 len 位等于 huff 的条目*/
+				
+	        incr = 1U << (len - drop);
         fill = 1U << curr;
         min = fill;                 /* save offset to next table */
         do {
@@ -292,7 +351,7 @@ int ZLIB_INTERNAL inflate_table(codetype type,
             next[(huff >> drop) + fill] = here;
         } while (fill != 0);
 
-        /* backwards increment the len-bit code huff */
+        /* backwards increment the len-bit code huff 向后递增长度为len的哈夫曼编码*/
         incr = 1U << (len - 1);
         while (huff & incr)
             incr >>= 1;
@@ -301,25 +360,26 @@ int ZLIB_INTERNAL inflate_table(codetype type,
             huff += incr;
         }
         else
-            huff = 0;
-
-        /* go to next symbol, update count, len */
+            huff = 0;			
+	
+        /* go to next symbol, update count, len 跳转到下一个符号，更新计数和长度*/
         sym++;
         if (--(count[len]) == 0) {
-            if (len == max) break;
+            if (len == max) 
+							break;
             len = lens[work[sym]];
         }
 
-        /* create new sub-table if needed */
+        /* create new sub-table if needed 如果需要，创建新的子表*/
         if (len > root && (huff & mask) != low) {
-            /* if first time, transition to sub-tables */
+            /* if first time, transition to sub-tables 如果是第一次，则转移到子表*/
             if (drop == 0)
                 drop = root;
 
-            /* increment past last table */
+            /* increment past last table 将指针增加到最后一个表之后*/
             next += min;            /* here min is 1 << curr */
 
-            /* determine length of next table */
+            /* determine length of next table 确定下一个表的长度*/
             curr = len - drop;
             left = (int)(1 << curr);
             while (curr + drop < max) {
@@ -335,7 +395,7 @@ int ZLIB_INTERNAL inflate_table(codetype type,
                 (type == DISTS && used > ENOUGH_DISTS))
                 return 1;
 
-            /* point entry in root table to sub-table */
+            /* point entry in root table to sub-table 将根表中的条目指向子表*/
             low = huff & mask;
             (*table)[low].op = (unsigned char)curr;
             (*table)[low].bits = (unsigned char)root;
@@ -343,7 +403,11 @@ int ZLIB_INTERNAL inflate_table(codetype type,
         }
     }
 
-    /* fill in remaining table entry if code is incomplete (guaranteed to have
+    /* 
+		   如果代码不完整，则填充剩余的表项（保证最多只有一个剩余的表项，因为如果代码
+		   不完整，到目前为止允许的最大代码长度是一位） 
+
+		   fill in remaining table entry if code is incomplete (guaranteed to have
        at most one remaining entry, since if the code is incomplete, the
        maximum code length that was allowed to get this far is one bit) */
     if (huff != 0) {
@@ -355,6 +419,6 @@ int ZLIB_INTERNAL inflate_table(codetype type,
 
     /* set return parameters */
     *table += used;
-    *bits = root;
+    *bits1 = root;
     return 0;
 }

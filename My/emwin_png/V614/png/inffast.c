@@ -32,7 +32,8 @@
 /*
 
 ```markdown
-### 解码字面值、长度和距离代码，并输出结果的字面值和匹配字节，直到输入或输出不足，遇到块结束，或遇到数据错误为止。当提供足够大的输入和输出缓冲区给 inflate() 时，
+### 解码字面值、长度和距离代码，并输出结果的字面值和匹配字节，直到输入或输出不足，遇到块结束，或遇到数据错误为止。
+当提供足够大的输入和输出缓冲区给 inflate() 时，
 例如，16K 的输入缓冲区和 64K 的输出缓冲区，95% 以上的 inflate 执行时间都在这个例程中度过。
 
 入口假设：
@@ -51,10 +52,12 @@
 
 备注：
 
-    - 长度/距离对使用的最大输入位是 15 位长度代码，5 位长度额外，15 位距离代码，13 位距离额外。总共为 48 位，或六个字节。因此，如果 strm->avail_in >= 6，
+    - 长度/距离对使用的最大输入位是 15 位长度代码，5 位长度额外，15 位距离代码，13 位距离额外。
+		总共为 48 位，或六个字节。因此，如果 strm->avail_in >= 6，
 		则有足够的输入以避免在解码时检查可用输入。
 
-    - 单个长度/距离对输出的最大字节数是 258 字节，这是可以编码的最大长度。inflate_fast() 需要每次循环 strm->avail_out >= 258，以避免检查输出空间。
+    - 单个长度/距离对输出的最大字节数是 258 字节，这是可以编码的最大长度。inflate_fast() 需要
+		每次循环 strm->avail_out >= 258，以避免检查输出空间。
 ```
 
 
@@ -98,30 +101,30 @@ z_streamp strm;
 unsigned start;         /* inflate()'s starting value for strm->avail_out */
 {
     struct inflate_state FAR *state;
-    z_const unsigned char FAR *in;      /* local strm->next_in */
-    z_const unsigned char FAR *last;    /* have enough input while in < last */
-    unsigned char FAR *out;     /* local strm->next_out */
-    unsigned char FAR *beg;     /* inflate()'s initial strm->next_out */
-    unsigned char FAR *end;     /* while out < end, enough space available */
+    z_const unsigned char FAR *in;      /* local strm->next_in 指向本地 strm->next_in 的无符号字符指针*/
+    z_const unsigned char FAR *last;    /* have enough input while in < last 当 in < last 时，输入足够*/
+    unsigned char FAR *out;     /* local strm->next_out 指向本地 strm->next_out 的无符号字符指针*/
+    unsigned char FAR *beg;     /* inflate()'s initial strm->next_out  inflate() 的初始 strm->next_out */
+    unsigned char FAR *end;     /* while out < end, enough space available 当 out < end 时，有足够的空间可用*/
 #ifdef INFLATE_STRICT
-    unsigned dmax;              /* maximum distance from zlib header */
+    unsigned dmax;              /* maximum distance from zlib header 从 zlib 头部的最大距离*/
 #endif
-    unsigned wsize;             /* window size or zero if not using window */
-    unsigned whave;             /* valid bytes in the window */
-    unsigned wnext;             /* window write index */
-    unsigned char FAR *window;  /* allocated sliding window, if wsize != 0 */
-    unsigned long hold;         /* local strm->hold */
-    unsigned bits;              /* local strm->bits */
-    code const FAR *lcode;      /* local strm->lencode */
-    code const FAR *dcode;      /* local strm->distcode */
-    unsigned lmask;             /* mask for first level of length codes */
-    unsigned dmask;             /* mask for first level of distance codes */
-    code here;                  /* retrieved table entry */
-    unsigned op;                /* code bits, operation, extra bits, or */
+    unsigned wsize;             /* window size or zero if not using window 窗口大小，如果不使用窗口则为零*/
+    unsigned whave;             /* valid bytes in the window 窗口中的有效字节*/
+    unsigned wnext;             /* window write index 窗口写入索引*/
+    unsigned char FAR *window;  /* allocated sliding window, if wsize != 0 分配的滑动窗口，如果 wsize 不为 0*/
+    unsigned long hold;         /* local strm->hold 本地 strm->hold*/
+    unsigned bits;              /* local strm->bits 本地 strm->bits*/
+    code const FAR *lcode;      /* local strm->lencode 本地 strm->lencode*/
+    code const FAR *dcode;      /* local strm->distcode 本地 strm->distcode*/
+    unsigned lmask;             /* mask for first level of length codes 长度编码第一级的掩码*/
+    unsigned dmask;             /* mask for first level of distance codes 距离编码第一级的掩码*/
+    code here;                  /* retrieved table entry 检索的表项*/
+    unsigned op;                /* code bits, operation, extra bits, or 代码位、操作、额外位数，或窗口位置、要复制的窗口字节*/
                                 /*  window position, window bytes to copy */
-    unsigned len;               /* match length, unused bytes */
-    unsigned dist;              /* match distance */
-    unsigned char FAR *from;    /* where to copy match from */
+    unsigned len;               /* match length, unused bytes匹配长度，未使用字节 */
+    unsigned dist;              /* match distance 匹配距离*/
+    unsigned char FAR *from;    /* where to copy match from 要从哪里复制匹配*/
 
     /* copy state to local variables */
     state = (struct inflate_state FAR *)strm->state;

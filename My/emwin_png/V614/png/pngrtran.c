@@ -391,7 +391,12 @@ png_set_alpha_mode(png_structrp png_ptr, int mode, double output_gamma)
 #endif
 
 #ifdef PNG_READ_QUANTIZE_SUPPORTED
-/* Dither file to 8-bit.  Supply a palette, the current number
+/* 
+将文件抖动为8位。提供一个调色板，调色板中当前元素的数量，允许的最大元素数量，
+以及可能的直方图。如果当前颜色数大于最大数，调色板将被修改以适应最大
+数。"full_quantize" 指示我们是否需要为 RGB 图像设置一个量化立方体，
+或者我们只是减少调色板图像中的颜色数量。
+ Dither file to 8-bit.  Supply a palette, the current number
  * of elements in the palette, the maximum number of elements
  * allowed, and a histogram if possible.  If the current number
  * of colors is greater then the maximum number, the palette will be

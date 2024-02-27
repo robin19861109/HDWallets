@@ -165,7 +165,7 @@ void invokeSeleImgWin(void)
 					{
 							GUI_SetBkColor(GUI_BLUE);
 							GUI_ClearRect(0, 0, 239, 239);
-			        printf("Prev curindex=%d pname=%s \r\n",curindex,pname);
+			        printf("status==1 Prev curindex=%d pname=%s \r\n",curindex,pname);
 					//	emwin_displaypng("0:/PICTURE/Œ¢»Ì.png", 1, 200, 100);
 						emwin_displaypngex(pname, 0, 5, 5);
 					//		emwin_displaypng(pname, 1, 200, 100);
@@ -178,7 +178,7 @@ void invokeSeleImgWin(void)
 		    {
 						GUI_ClearRect(0, 0, 239, 239);
 					
-					  printf("Prev curindex=%d pname=%s \r\n",curindex,pname);
+					  printf("status==2 Prev curindex=%d pname=%s \r\n",curindex,pname);
 		/*        if(curindex==5)
 	  			     emwin_displaypng("0:/PICTURE/PNG/∆Û∂Ï.png", 1, 200, 100);
 						else*/

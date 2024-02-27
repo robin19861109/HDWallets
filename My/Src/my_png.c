@@ -6,7 +6,7 @@
 
 //Check if the PNG file exists.
 //char *pmyPicDir = "0:";
-char *pmyPicDir ="0:/PICTURE/PNG";
+char *pmyPicDir ="0:/PICTURE/PNG1";
 _info_PicFile info_PicFile;
 uint16_t pic_get_tnum(char *path)
 {

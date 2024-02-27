@@ -63,7 +63,18 @@ png_default_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
       png_error(png_ptr, "Read Error");
 }
 #endif
+/* 此函数允许应用程序为 libpng 提供一个新的输入函数，如果不使用标准 C 流。
 
+该函数的参数包括：
+
+png_ptr - 指向一个 png 输入数据结构的指针
+
+io_ptr - 指向包含有关输入函数信息的用户提供的结构体的指针。可以为 NULL。
+
+read_data_fn - 指向一个新的输入函数的指针，该函数的参数包括指向一个 png_struct 的指针、
+一个指向可以存储输入数据的位置的指针，以及一个表示要读取的字节数的 32 位无符号整数。为了
+退出并输出任何致命错误消息，新的写入函数应调用 png_error(png_ptr, "错误消息")。可以为 NULL，
+如果为 NULL，则将使用 libpng 的默认函数。*/
 /* This function allows the application to supply a new input function
  * for libpng if standard C streams aren't being used.
  *

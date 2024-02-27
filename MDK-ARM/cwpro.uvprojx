@@ -3643,14 +3643,14 @@
               <FilePath>..\My\emwin_png\V614\png\infback.c</FilePath>
             </File>
             <File>
-              <FileName>inffast.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\My\emwin_png\V614\png\inffast.c</FilePath>
-            </File>
-            <File>
               <FileName>inflate.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\My\emwin_png\V614\png\inflate.c</FilePath>
+            </File>
+            <File>
+              <FileName>inffast.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\My\emwin_png\V614\png\inffast.c</FilePath>
             </File>
             <File>
               <FileName>inftrees.c</FileName>

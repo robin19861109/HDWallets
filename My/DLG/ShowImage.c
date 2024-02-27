@@ -140,9 +140,12 @@ static int emwin_png_get_data(void *p, const U8 **ppData, unsigned NumBytesReq, 
 //  taskEXIT_CRITICAL(); /* 退出临界区 */
 #endif
   if(NumBytesReq!=NumBytesRead)
-		printf("err  emwin_png_get_data NumBytesReq=%d NumBytesRead=%d ret=%d\r\n",NumBytesReq,NumBytesRead,ret);
+		printf("err  emwin_png_get_data NumBytesReq=%d NumBytesRead=%d addr=0x%x\r\n",NumBytesReq,NumBytesRead,(uint32_t)pData);
 	else
-		printf("succ  emwin_png_get_data NumBytesReq=%d NumBytesRead=%d ret=%d\r\n",NumBytesReq,NumBytesRead,ret);
+	{
+		printf("succ  emwin_png_get_data NumBytesReq=%d NumBytesRead=%d addr=0x%x\r\n",NumBytesReq,NumBytesRead,(uint32_t)pData);
+
+	}
  
  // if(NumBytesRead>8000)
 	//	printf("NumBytesRead = %d NumBytesReq=%d\r\n",NumBytesRead,NumBytesReq);
@@ -319,15 +322,18 @@ int emwin_displaypngex(char *PNGFileName, uint8_t mode, uint32_t x, uint32_t y)
     /* 文件打开错误 */
     if (result != FR_OK) return 1;
 
-    XSize = GUI_PNG_GetXSizeEx(emwin_png_get_data, &PNGFile); /* PNG图片X大小 */
-    YSize = GUI_PNG_GetYSizeEx(emwin_png_get_data, &PNGFile); /* PNG图片Y大小 */
+    //XSize = GUI_PNG_GetXSizeEx(emwin_png_get_data, &PNGFile); /* PNG图片X大小 */
+    //YSize = GUI_PNG_GetYSizeEx(emwin_png_get_data, &PNGFile); /* PNG图片Y大小 */
     
-	  printf("GUI_PNG_GetXSizeEx XSize=%d  YSize=%d \r\n",XSize,YSize);
-
+	//  printf("GUI_PNG_GetXSizeEx XSize=%d  YSize=%d \r\n",XSize,YSize);
+    printf("emwin_displaypngex  pname=%s \r\n",PNGFileName);
     switch (mode)
     {
         case 0: /* 在指定位置显示图片 */
-            GUI_PNG_DrawEx(emwin_png_get_data, &PNGFile, x, y);
+        //  GUI_PNG_DrawEx(emwin_png_get_data, &PNGFile, x, y);
+				//    x = 256;
+				//    y = 256;
+				    GUI_PNG_DrawEx(emwin_png_get_data, &PNGFile, x, y);
             break;
 
         case 1: /* 在LCD中间显示图片 */

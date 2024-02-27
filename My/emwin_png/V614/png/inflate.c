@@ -974,16 +974,21 @@ int flush;
         case TABLE:
              NEEDBITS(14);
 					//				NEEDBITS1(14,&have,&bits,&hold,next);
-				    {
-							unsigned short xy = BITS(5);
-							state->nlen = xy + 257;
-				    //state->nlen = BITS(5) + 257;  //HLIT
-						}
+				 //   {
+						//	unsigned short xy = BITS(5);
+					//		state->nlen = xy + 257;
+				    state->nlen = BITS(5) + 257;  //HLIT
+	//		HLIT：5比特，记录literal/length码树中码长序列（CL1）个数的一个变量。后面CL1个数等于HLIT+257（因为至少有0-255总共256个literal，还有一个256表示解码结束，但length的个数不定）。	
+				
+					//	}
 			//	DROPBITS1(5,&bits,&hold,next);	
             DROPBITS(5);
             state->ndist = BITS(5) + 1;//HDIST
+	//HDIST：5比特，记录distance码树中码长序列（CL2）个数的一个变量。后面CL2个数等于HDIST+1。哪怕没有1个重复字符串，distance都为0也是一个CL。			
             DROPBITS(5);
             state->ncode = BITS(4) + 4;//HCLEN
+	//HCLEN：4比特，记录Huffman码表3中码长序列（CCL）个数的一个变量。后面CCL个数等于HCLEN+4。PK认为CCL个数不会低于4个，即使对于整个文件只有1个字符的情况。			
+				
             DROPBITS(4);
 #ifndef PKZIP_BUG_WORKAROUND
             if (state->nlen > 286 || state->ndist > 30) {
@@ -996,8 +1001,10 @@ int flush;
             state->have = 0;
             state->mode = LENLENS;
         case LENLENS:
-			  	{
-						unsigned short xy1 , xy2;
+
+				//		unsigned short xy1 , xy2;
+				
+		//	接下来是3比特编码的CCL，一共HCLEN+4个，用以构造Huffman码表3；	
             while (state->have < state->ncode) {
                 NEEDBITS(3);
 							//  xy1=(unsigned short)BITS(3);
@@ -1006,12 +1013,24 @@ int flush;
                 state->lens[order[state->have++]] = (unsigned short)BITS(3);
 		            DROPBITS(3);
             }
-					}
+
             while (state->have < 19)
                 state->lens[order[state->have++]] = 0;
+						
+						
             state->next = state->codes;
             state->lencode = (const code FAR *)(state->next);
             state->lenbits = 7;
+						
+						{
+							int ii=0;
+						  printf("state->lens:\r\n");
+							for(ii=0;ii<19;ii++)
+							{
+								printf("%d ",state->lens[ii]);
+							}
+							printf("\r\n");
+						}
             ret = inflate_table(CODES, state->lens, 19, &(state->next),
                                 &(state->lenbits), state->work);
             if (ret) {
@@ -1022,13 +1041,20 @@ int flush;
             Tracev((stderr, "inflate:       code lengths ok\n"));
             state->have = 0;
             state->mode = CODELENS;
-        case CODELENS:
+        case CODELENS://cl1+cl2
             while (state->have < state->nlen + state->ndist) {
+							  printf("state->lenbits =\r\n");
                 for (;;) {
+									  int xx = 0;
+									  printf("%d  ",state->lenbits);
+									  xx = BITS(state->lenbits);
+									  here = state->lencode[xx];
                     here = state->lencode[BITS(state->lenbits)];
-                    if ((unsigned)(here.bits) <= bits) break;
+                    if ((unsigned)(here.bits) <= bits)
+											break;
                     PULLBYTE();
                 }
+								printf("\r\n");
                 if (here.val < 16) {
                     DROPBITS(here.bits);
                     state->lens[state->have++] = here.val;
@@ -1068,6 +1094,8 @@ int flush;
                     while (copy--)
                         state->lens[state->have++] = (unsigned short)len;
                 }
+								if(state->have==206)
+									printf("fffffffffffffffff state->have=%d\r\n",state->have);
             }
 
             /* handle error breaks in while */
@@ -1080,7 +1108,9 @@ int flush;
                 break;
             }
 
-            /* build code tables -- note: do not change the lenbits or distbits
+            /* 构建编码表 - 注意：请在阅读 inftrees.h 中有关 ENOUGH 常量的注释之前，
+						   不要更改此处的 lenbits 或 distbits 值（分别为 9 和 6），这些常量取决于这些值。
+						   build code tables -- note: do not change the lenbits or distbits
                values here (9 and 6) without reading the comments in inftrees.h
                concerning the ENOUGH constants, which depend on those values */
             state->next = state->codes;
@@ -1167,21 +1197,11 @@ int flush;
             state->was = state->length;
             state->mode = DIST;
         case DIST:
-				{
-					 code here1;                  /* table entry for duplication */
-						  int xx00 =0,xx11 = 0;
-            for (;;) {
-			
-							
-
+	            for (;;) {
                 here = state->distcode[BITS(state->distbits)];
-							  xx00 = state->distbits;
-							  xx11 = BITS(xx00);
-							  here1 = state->distcode[xx11];
                 if ((unsigned)(here.bits) <= bits) break;
                 PULLBYTE();
             }
-					}
             if ((here.op & 0xf0) == 0) {
                 last = here;
                 for (;;) {
@@ -1202,7 +1222,8 @@ int flush;
             }
             state->offset = (unsigned)here.val;
             state->extra = (unsigned)(here.op) & 15;
-            state->mode = DISTEXT;
+            state->mode = DISTEXT;				
+
         case DISTEXT:
             if (state->extra) {
                 NEEDBITS(state->extra);
